@@ -24,6 +24,10 @@ I decided to release Water System as-is and as an open source, because of imposs
 **Water Interactions**
 - Controlling interactions by other objects with the water
 
+# Requirements
+- Universal Render Pipeline
+- Unity v2020+
+
 # Guide
 1. Create empty **Game Object** in the scene.
 2. Add component **Water Builder** to this **Game Object** (this will automatically create water mesh with needed dependencies).
