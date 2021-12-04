@@ -50,3 +50,6 @@ I decided to release Water System as-is and as an open source, because of imposs
 - There is no optimization for large water mesh.
 - When positioning **Mesh Points**, keep in mind that some concave shapes may not be generated properly.
 - Avoid positioning of **Mesh Points** in a way that connecting lines are crossing one another.
+
+# Credits
+- [Jasper Flick](https://twitter.com/catlikecoding) -> for inspiration on some techniques
