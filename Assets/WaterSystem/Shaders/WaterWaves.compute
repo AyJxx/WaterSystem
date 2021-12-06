@@ -1,0 +1,153 @@
+﻿#pragma kernel CSComputeWaves
+
+#pragma multi_compile __ _DYNAMIC_WAVES
+#pragma multi_compile __ _INTERACTION_WAVES
+
+Texture2D<float4> _WaterHeightInputTexture;
+RWTexture2D<float4> _WaterHeightMap;
+
+float _DynamicWaveAmplitude;
+int _DynamicWavesCount;
+
+int _InteractionWavesCount;
+float _InteractionWaveAmplitude;
+float _InteractionWaveSpeed;
+float _InteractionWaveFrequency;
+
+int _TextureResolution;
+float _WaterHeightMapScaleFactorXZ;
+float _WaterHeightMapScaleFactorY;
+float3 _MinWorldPos;
+
+float _Time;
+
+struct DynamicWaveData
+{
+    int enabled;
+    float2 direction;
+    float steepness;
+    float length;
+};
+
+RWStructuredBuffer<DynamicWaveData> _DynamicWavesData;
+
+struct InteractionWaveData
+{
+    float3 waveHitPos;
+    float waveStrength;
+    float waveSpread;
+    float waveFrequency;
+};
+
+StructuredBuffer<InteractionWaveData> _InteractionWavesData : register(t2);
+
+
+float3 DecodeVertexPosition(uint3 id)
+{
+    // XZ vertex positions are calculated from resolution of the texture (where should be each vertex positioned in the bounds)
+    float2 posXZ = float2(id.xy) / _TextureResolution;
+
+    float height = _WaterHeightInputTexture[id.xy].r;
+    height = height * 2 - 1; // Shifting to <-1, 1> range
+
+    // _WaterHeightInputTexture texture contains relative height in R channel
+    float3 vertexPos = float3(posXZ.x, height, posXZ.y);
+    vertexPos.x = _MinWorldPos.x + _WaterHeightMapScaleFactorXZ * vertexPos.x;
+    vertexPos.y = _MinWorldPos.y + _WaterHeightMapScaleFactorY * vertexPos.y;
+    vertexPos.z = _MinWorldPos.z + _WaterHeightMapScaleFactorXZ * vertexPos.z;
+
+    return vertexPos;
+}
+
+void EncodeVertexPosition(float3 finalPos)
+{
+    // USE THIS IF _WaterHeightMap is used in WaterSurface shader
+    //finalPos.y = (finalPos.y - _MinWorldPos.y) / _WaterHeightMapScaleFactorY;
+
+    // USE THIS IF _WaterHeightMap is not used
+    finalPos.y = finalPos.y / _WaterHeightMapScaleFactorY;
+    finalPos.y = finalPos.y * 0.5 + 0.5; // Shifting to <0, 1>
+
+    finalPos.x = (finalPos.x - _MinWorldPos.x) / _WaterHeightMapScaleFactorXZ;
+    finalPos.z = (finalPos.z - _MinWorldPos.z) / _WaterHeightMapScaleFactorXZ;
+
+	// Calculating texture coordinates of XZ position
+    uint2 texCoords = uint2(
+        floor(finalPos.x * (_TextureResolution - 1)),
+        floor(finalPos.z * (_TextureResolution - 1))
+        );
+
+    // USE THIS IF _WaterHeightMap is used in WaterSurface shader
+    //_WaterHeightMap[id.xy] = float4(finalPos.x, finalPos.y, finalPos.z, 1.0);
+
+    // USE THIS IF _WaterHeightMap is not used in WaterSurface shader
+    _WaterHeightMap[texCoords.xy] = float4(0, finalPos.y, 0, 1.0); // TODO: Make this 1-channel texture
+}
+
+float3 GerstnerWave(float2 waveDir, float steepness, float wavelength, float2 vertexPos)
+{
+    float pi = 3.14159265358979;
+    waveDir = normalize(waveDir);
+    float w = (2 * pi) / wavelength;
+    float s = sqrt(9.8 * w);
+    
+    float A = _DynamicWaveAmplitude;
+    float Q = steepness / (w * A * max(1, _DynamicWavesCount));
+    
+    float WA = w * A;
+    float sinF = sin(w * dot(waveDir, vertexPos.xy) - s * _Time);
+    float cosF = cos(w * dot(waveDir, vertexPos.xy) - s * _Time);
+    
+    float3 pos = float3(
+                        Q * A * waveDir.x * cosF,
+                        A * sinF,
+                        Q * A * waveDir.y * cosF
+    );
+    
+    return pos;
+}
+
+[numthreads(8,8,1)]
+void CSComputeWaves(uint3 id : SV_DispatchThreadID)
+{
+    const float3 vertexPos = DecodeVertexPosition(id);
+    float3 finalPos = vertexPos;
+
+#ifdef _DYNAMIC_WAVES
+    // Dynamic waves
+    for (int i = 0; i < _DynamicWavesCount; i++)
+    {
+        DynamicWaveData waveData = _DynamicWavesData[i];
+        if (waveData.enabled == 0)
+            continue;
+    	
+        finalPos += GerstnerWave(waveData.direction, waveData.steepness, waveData.length, vertexPos.xz);
+    }
+#endif
+	
+#ifdef _INTERACTION_WAVES
+    // Interaction waves
+    float vertexYOffset = 0.0;
+
+    for (int j = 0; j < _InteractionWavesCount; j++)
+    {
+        int index = j;
+        InteractionWaveData waveData = _InteractionWavesData[index];
+
+        float hitDistanceToPos = distance(waveData.waveHitPos, float3(finalPos.x, 0.0, finalPos.z));
+
+        float spread = waveData.waveSpread * _InteractionWaveSpeed;
+        float frequency = waveData.waveFrequency * _InteractionWaveFrequency;
+        float amplitude = waveData.waveStrength * _InteractionWaveAmplitude;
+
+        float vOffset = sin((hitDistanceToPos - spread) * frequency) * amplitude;
+        vOffset *= smoothstep(0, hitDistanceToPos, waveData.waveSpread);
+
+        vertexYOffset += vOffset;
+    }
+
+    finalPos.y += vertexYOffset;
+#endif
+
+    EncodeVertexPosition(finalPos);
+}
