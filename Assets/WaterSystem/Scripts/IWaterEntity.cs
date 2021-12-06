@@ -1,4 +1,7 @@
-﻿namespace WaterSystem
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+namespace WaterSystem
 {
 	/// <summary>
 	/// Implement this interface for all objects which can interact with the water to have access to the water height, etc.

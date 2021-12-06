@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -100,7 +103,7 @@ namespace WaterSystem
 		private MeshRenderer WaterRenderer => waterRenderer ?? (waterRenderer = GetComponent<MeshRenderer>());
 		private MeshCollider WaterCollider => waterCollider ?? (waterCollider = GetComponent<MeshCollider>());
 
-		private WaterMeshCreator WaterMeshCreator => waterMeshCreator ?? (waterMeshCreator = new WaterMeshCreator(WaterMeshFilter));
+		private WaterMeshCreator WaterMeshCreator => waterMeshCreator ?? (waterMeshCreator = new WaterMeshCreator());
 		private WaterFlowMapCreator WaterFlowMapCreator => waterFlowMapCreator ?? (waterFlowMapCreator = new WaterFlowMapCreator(WaterMeshFilter, DrawFlowMapMaterial));
 
 		/// <summary>

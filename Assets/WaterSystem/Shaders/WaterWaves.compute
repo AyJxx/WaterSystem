@@ -1,4 +1,7 @@
-﻿#pragma kernel CSComputeWaves
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#pragma kernel CSComputeWaves
 
 #pragma multi_compile __ _DYNAMIC_WAVES
 #pragma multi_compile __ _INTERACTION_WAVES
@@ -61,10 +64,6 @@ float3 DecodeVertexPosition(uint3 id)
 
 void EncodeVertexPosition(float3 finalPos)
 {
-    // USE THIS IF _WaterHeightMap is used in WaterSurface shader
-    //finalPos.y = (finalPos.y - _MinWorldPos.y) / _WaterHeightMapScaleFactorY;
-
-    // USE THIS IF _WaterHeightMap is not used
     finalPos.y = finalPos.y / _WaterHeightMapScaleFactorY;
     finalPos.y = finalPos.y * 0.5 + 0.5; // Shifting to <0, 1>
 
@@ -77,10 +76,6 @@ void EncodeVertexPosition(float3 finalPos)
         floor(finalPos.z * (_TextureResolution - 1))
         );
 
-    // USE THIS IF _WaterHeightMap is used in WaterSurface shader
-    //_WaterHeightMap[id.xy] = float4(finalPos.x, finalPos.y, finalPos.z, 1.0);
-
-    // USE THIS IF _WaterHeightMap is not used in WaterSurface shader
     _WaterHeightMap[texCoords.xy] = float4(0, finalPos.y, 0, 1.0); // TODO: Make this 1-channel texture
 }
 
@@ -114,7 +109,6 @@ void CSComputeWaves(uint3 id : SV_DispatchThreadID)
     float3 finalPos = vertexPos;
 
 #ifdef _DYNAMIC_WAVES
-    // Dynamic waves
     for (int i = 0; i < _DynamicWavesCount; i++)
     {
         DynamicWaveData waveData = _DynamicWavesData[i];
@@ -126,7 +120,6 @@ void CSComputeWaves(uint3 id : SV_DispatchThreadID)
 #endif
 	
 #ifdef _INTERACTION_WAVES
-    // Interaction waves
     float vertexYOffset = 0.0;
 
     for (int j = 0; j < _InteractionWavesCount; j++)

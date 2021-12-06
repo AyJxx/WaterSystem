@@ -1,4 +1,7 @@
-﻿#ifndef WATER_UNIFORMS
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_UNIFORMS
 #define WATER_UNIFORMS
 
 sampler2D _Test;

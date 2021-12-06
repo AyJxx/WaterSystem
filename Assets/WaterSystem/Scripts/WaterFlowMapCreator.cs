@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace WaterSystem
@@ -51,8 +50,6 @@ namespace WaterSystem
 			var edgeLength = Mathf.Max(diffX, diffZ);
 
 			var flowMap = new RenderTexture(flowMapWidth, flowMapWidth, 0, RenderTextureFormat.ARGB32);
-
-			//drawFlowMapMaterial.SetTexture("NoiseTex", noiseTex);
 
 			// Sort flow vector transforms, so global flow is on the first index to create proper flow map
 			var flowVectors = flowVectorsTransform.GetComponentsInChildren<WaterFlow>();

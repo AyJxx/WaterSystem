@@ -1,4 +1,7 @@
-﻿#ifndef WATER_TESSELLATION
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_TESSELLATION
 #define WATER_TESSELLATION
 
 #if defined(SHADER_API_D3D11) || defined(SHADER_API_GLES3) || defined(SHADER_API_GLCORE) || defined(SHADER_API_VULKAN) || defined(SHADER_API_METAL) || defined(SHADER_API_PSSL)

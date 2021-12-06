@@ -1,3 +1,6 @@
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
 using System;
 using System.Threading.Tasks;
 

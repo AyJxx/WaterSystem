@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;

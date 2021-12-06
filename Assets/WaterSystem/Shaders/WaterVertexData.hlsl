@@ -1,4 +1,7 @@
-﻿#ifndef WATER_VERTEX_DATA
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_VERTEX_DATA
 #define WATER_VERTEX_DATA
 
 struct Attributes

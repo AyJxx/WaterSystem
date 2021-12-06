@@ -1,4 +1,7 @@
-﻿#ifndef WATER_VISUAL
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_VISUAL
 #define WATER_VISUAL
 
 #include "Packages/com.unity.render-pipelines.universal/Shaders/LitInput.hlsl"
@@ -70,10 +73,8 @@ float2 CalculateUvFlow(float2 uv, float3 flowAndSpeed, float tiling, out float2x
     //sin, cos
     
     float2 dir = normalize(flowAndSpeed.xy);
-    //uv = uv * 2 - 1;
     rotationMatrix = float2x2(dir.y, -dir.x, dir.x, dir.y);
     uv = mul(rotationMatrix, uv); // But rotating UV means that addition of uv is scrolling down, so in the end for clockwise direction we need to use clockwise matrix
-    //uv = uv * 0.5 + 0.5;
     uv.y -= _Time.y * flowAndSpeed.z * _FlowSpeed;
     
     return uv * tiling;
@@ -84,7 +85,7 @@ float2 CalculateUvFlow(float2 uv, float2 offset, out float2x2 rotationMatrix)
     float3 flowAndSpeed = CalculateFlowVector(uv, offset);
     float tilingModulated = 50;
     float tiling = flowAndSpeed.z * tilingModulated + _Tiling;
-    //float2 uvFlow = DirectionalFlow(input.uv.xy, float2(sin(_Time.y * 0.3), cos(_Time.y * 0.3)), _Tiling, rotationMatrix);
+
     return CalculateUvFlow(uv + offset, flowAndSpeed, tiling, rotationMatrix);
 }
 
@@ -99,9 +100,6 @@ float3 SampleDerivativeHeightMapByFlow(sampler2D sampledTexture, float2 uvsFlow[
     texData2.xy = mul(rotationMatrices[1], texData2.xy);
     texData3.xy = mul(rotationMatrices[2], texData3.xy);
     texData4.xy = mul(rotationMatrices[3], texData4.xy);
-
-    //texData1 *= flow.z * HeightScaleModulated + HeightScale;
-	//...
     
     float3 texData = texData1 * weights[0] + texData2 * weights[1] + texData3 * weights[2] + texData4 * weights[3];
     
@@ -119,33 +117,26 @@ float3 SampleNormalMapByFlow(sampler2D sampledTexture, float normalScale, float2
     normal2.xy = mul(rotationMatrices[1], normal2.xy);
     normal3.xy = mul(rotationMatrices[2], normal3.xy);
     normal4.xy = mul(rotationMatrices[3], normal4.xy);
-
-    //normal1 *= flow.z * HeightScaleModulated + HeightScale;
-	//...
     
     return normal1 * weights[0] + normal2 * weights[1] + normal3 * weights[2] + normal4 * weights[3];
 }
 
 half3 SampleColorTextureByFlow(sampler2D sampledTexture, float4 tilingAndOffset, float2 uvsFlow[4], float weights[4])
 {
-    half3 color1 = tex2D(sampledTexture, uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
-    half3 color2 = tex2D(sampledTexture, uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
-    half3 color3 = tex2D(sampledTexture, uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
-    half3 color4 = tex2D(sampledTexture, uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
-
-    //color1 *= flow.z * HeightScaleModulated + HeightScale;
-	//...
+    half3 color1 = tex2D(sampledTexture, uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw).rgb;
+    half3 color2 = tex2D(sampledTexture, uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw).rgb;
+    half3 color3 = tex2D(sampledTexture, uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw).rgb;
+    half3 color4 = tex2D(sampledTexture, uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw).rgb;
     
     return color1 * weights[0] + color2 * weights[1] + color3 * weights[2] + color4 * weights[3];
 }
 
 float CalculateWaterColorGradientParameter(float4 tilingAndOffset, float2 uvsFlow[4], float weights[4])
 {
-	// TODO: Make this parametrized
-    half noise1 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
-    half noise2 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
-    half noise3 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
-    half noise4 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
+    half noise1 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw)).r;
+    half noise2 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw)).r;
+    half noise3 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw)).r;
+    half noise4 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw)).r;
 	
     return noise1 * weights[0] + noise2 * weights[1] + noise3 * weights[2] + noise4 * weights[3];
 }
@@ -198,14 +189,6 @@ half3 CalculateFoamColor(float2 uvUnscaled, float3 positionWS, float3 normalTS, 
     half3 edgeFoam = 0.0;
 #endif
 
-	
-    //float2 testUV = input.uv;
-    //testUV = testUV * 2 - 1;
-    //testUV *= 10 * (unity_gradientNoise(input.uv.xy * _Amount) + 0.5);
-    //testUV += 5 * (unity_gradientNoise(input.uv.xy * _Amount) + 0.5);
-    //float2 flowVector = testUV - 0.0;
-    //testUV += flowVector * abs(sin(_Time.y));
-    //testUV = testUV * 0.5 + 0.5;
     half3 foamWave = 0.0;
 
 #ifdef _FOAM_WAVES
@@ -244,8 +227,7 @@ half3 CalculateFoamColor(float2 uvUnscaled, float3 positionWS, float3 normalTS, 
 half3 CalculateWaterColor(float2 uvUnscaled, float2 flowVector, float2 uvsFlow[4], float weights[4], out half3 normalTS)
 {
     half3 waterCol = 0.0;
-    
-    //float2 mainUV = uvUnscaled * _Noise_ST.xy + _Noise_ST.zw;
+
     float2 mainUV = uvUnscaled;
 
     float noise = smoothstep(0, 0.5, UnityGradientNoise(mainUV));
@@ -253,7 +235,7 @@ half3 CalculateWaterColor(float2 uvUnscaled, float2 flowVector, float2 uvsFlow[4
     half3 gradientParameter = CalculateWaterColorGradientParameter(float4(1, 1, 0, 0), uvsFlow, weights);
 
     float blendingFactor1, blendingFactor2;
-    float2 uvFlow1 = CalculateFlowUV(mainUV, flowVector, 0.0, _FlowSpeed, blendingFactor1, noise); // unscaledUV
+    float2 uvFlow1 = CalculateFlowUV(mainUV, flowVector, 0.0, _FlowSpeed, blendingFactor1, noise);
     float2 uvFlow2 = CalculateFlowUV(mainUV, flowVector, 0.5, _FlowSpeed, blendingFactor2, noise);
 
     half water1 = smoothstep(0, 0.5, UnityGradientNoise(uvFlow1)) * blendingFactor1;
@@ -263,13 +245,7 @@ half3 CalculateWaterColor(float2 uvUnscaled, float2 flowVector, float2 uvsFlow[4
     half3 normal1 = UnpackScaleNormal(tex2D(_NormalMap, uvFlow1), _NormalScale) * blendingFactor1;
     half3 normal2 = UnpackScaleNormal(tex2D(_NormalMap, uvFlow2), _NormalScale) * blendingFactor2;
     normalTS = normalize(normal1 + normal2);
-    
-    //float3 dh = SampleDerivativeHeightMapByFlow(_Test, uvsFlow, rotationMatrices, weights);
-    //normalTS = normalize(float3(-dh.xy, 1));
-    
-    //normalTS = normalize(float3(SampleNormalMapByFlow(_NormalMap, _NormalScale, uvsFlow, rotationMatrices, weights).xyz));
-    
-    //waterCol = dh.z * dh.z;
+
     waterCol = lerp(_WaterColor2.rgb, _WaterColor1.rgb, gradientParameter);
     
     return waterCol;
@@ -285,8 +261,6 @@ inline void InitializeSurfaceData(float2 uv, float2 flowVector, float2 uvsFlow[4
 
     outSurfaceData.metallic = 1.0h;
     outSurfaceData.specular = _SpecColor.rgb;
-    //outSurfaceData.metallic = _Metallic;
-    //outSurfaceData.specular = half3(0.0h, 0.0h, 0.0h);
 
     outSurfaceData.smoothness = _Smoothness;
     outSurfaceData.normalTS = normalTS;
@@ -303,12 +277,7 @@ inline void InitializeBRDFDataCustom(half3 albedo, half metallic, half3 specular
     half oneMinusReflectivity = 1.0 - reflectivity;
     outBRDFData.diffuse = albedo * (half3(1.0h, 1.0h, 1.0h) - specular);
     outBRDFData.specular = specular;
-    
-    //half oneMinusReflectivity = OneMinusReflectivityMetallic(metallic);
-    //half reflectivity = 1.0 - oneMinusReflectivity;
-    //outBRDFData.diffuse = albedo * oneMinusReflectivity;
-    //outBRDFData.specular = lerp(kDieletricSpec.rgb, albedo, metallic);
-    
+
     outBRDFData.grazingTerm = saturate(smoothness + reflectivity);
     outBRDFData.perceptualRoughness = PerceptualSmoothnessToPerceptualRoughness(smoothness);
     outBRDFData.roughness = max(PerceptualRoughnessToRoughness(outBRDFData.perceptualRoughness), HALF_MIN);

@@ -1,11 +1,10 @@
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
 Shader "Water System/Water Surface"
 {
     Properties
     {
-        /*[Toggle(_VERTEX_WAVES_TEXTURE)] _VertexWavesTexture("Vertex Waves Texture", Float) = 0.0
-        [Toggle(_WAVES_DEBUG)] _WavesDebug("Waves Debug", Float) = 1.0
-        _WaterHeightMap("Water Height Map", 2D) = "black" {}*/
-
         [Header(Water)]
         [Space(10)]
         [HideInInspector] _WaterScale ("Water Scale", Float) = 1.0
@@ -32,7 +31,6 @@ Shader "Water System/Water Surface"
 		[HideInInspector] _Tiling("Global Tiling", Float) = 1
         [HideInInspector] _GridResolution("Grid Resolution", Float) = 5.0
 		[HideInInspector] _FlowSpeed("Flow Speed", Float) = 1
-		//_FlowOffset("Flow Offset", Float) = 0 // Setting when animation starts, setting it to -0.5 means that we see our texture at full strength in undistorted state, while 0 means that we see our texture in half-distorted state
         [Space(10)]
 
         [Header(Foam)]
@@ -83,10 +81,6 @@ Shader "Water System/Water Surface"
         [Header(Waves)]
         [Space(10)]
         [HideInInspector] [Toggle(_DYNAMIC_WAVES)] _DynamicWaves("Dynamic Waves", Float) = 1
-		/*[IntRange] _DynamicWavesCount ("Dynamic Waves Count", Range(0, 3)) = 0
-        _WaveA ("Debug Wave A (dir, steepness, wavelength", Vector) = (1, 1, 0.5, 30)
-        _WaveB ("Debug Wave B (dir, steepness, wavelength", Vector) = (1, 1, 0.5, 30)
-        _WaveC ("Debug Wave C (dir, steepness, wavelength", Vector) = (1, 1, 0.5, 30)*/
 		[HideInInspector] _DynamicWaveAmplitude ("Dynamic Wave Amplitude", Float) = 1.0
 
         [Space(10)]
@@ -150,8 +144,6 @@ Shader "Water System/Water Surface"
             #pragma multi_compile _ LIGHTMAP_ON
             #pragma multi_compile_fog
 
-            //#pragma multi_compile_instancing
-
             #pragma shader_feature _INTERACTION_FOAM
             #pragma shader_feature _DYNAMIC_FOAM
             #pragma shader_feature _STATIC_FOAM
@@ -161,8 +153,6 @@ Shader "Water System/Water Surface"
             #pragma shader_feature _DYNAMIC_WAVES
             #pragma shader_feature _INTERACTION_WAVES
             #pragma shader_feature _CAUSTICS
-            #pragma shader_feature _VERTEX_WAVES_TEXTURE // TODO: Will not be needed.
-            #pragma shader_feature _WAVES_DEBUG // TODO: Will not be needed.
             #pragma shader_feature _TESSELLATION_EDGEFACTOR _TESSELLATION_EDGELENGTH
 
             #pragma vertex LitPassVertex
@@ -204,7 +194,6 @@ Shader "Water System/Water Surface"
 
             #pragma shader_feature _ALPHATEST_ON
 
-            //#pragma multi_compile_instancing
             #pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
 
             #pragma vertex ShadowPassVertex
@@ -215,9 +204,6 @@ Shader "Water System/Water Surface"
             ENDHLSL
         }
 
-        // If shadows cascade are enabled we need to perform a depth prepass. 
-        // We also need to use a depth prepass in some cases camera require depth texture
-        // (e.g, MSAA is enabled and we can't resolve with Texture2DMS
         Pass
         {
             Name "DepthOnly"
@@ -237,8 +223,6 @@ Shader "Water System/Water Surface"
 
             #pragma shader_feature _ALPHATEST_ON
             #pragma shader_feature _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
-
-            //#pragma multi_compile_instancing
 
             #include "LitInput.hlsl"
             #include "DepthOnlyPass.hlsl"

@@ -1,4 +1,7 @@
-﻿#ifndef WATER_PROGRAM
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_PROGRAM
 #define WATER_PROGRAM
 
 #include "WaterVertexData.hlsl"
@@ -16,16 +19,13 @@ GeometryOutput CalculateVertex(VertexOutput input)
     GeometryOutput output;
     CalculateWaves(input.positionOS.xyz, input.normalOS, input.tangentOS.xyz, output.waveStrength.xy, input.uv.xy, output.posOffsetXZ);
 
-    // VertexPositionInputs contains position in multiple spaces (world, view, homogeneous clip space)
     VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
-
-    // Getting normal, tangent and bitangent in world space.
     VertexNormalInputs vertexNormalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
     // Computes fog factor per-vertex.
     float fogFactor = ComputeFogFactor(vertexInput.positionCS.z);
 
-    output.uv.xy = input.uv; // Explore TRANSFORM_TEX()
+    output.uv.xy = input.uv;
     output.uv.zw = input.uvLM.xy * unity_LightmapST.xy + unity_LightmapST.zw; // Lightmap UV
 
     output.positionWSAndFogFactor = float4(vertexInput.positionWS, fogFactor);
@@ -34,11 +34,6 @@ GeometryOutput CalculateVertex(VertexOutput input)
     output.bitangentWS = vertexNormalInput.bitangentWS;
 
 #ifdef _MAIN_LIGHT_SHADOWS
-    // shadow coord for the main light is computed in vertex.
-    // If cascades are enabled, LWRP will resolve shadows in screen space
-    // and this coord will be the uv coord of the screen space shadow texture.
-    // Otherwise LWRP will resolve shadows in light space (no depth pre-pass and shadow collect pass)
-    // In this case shadowCoord will be the position in light space.
     output.shadowCoord = GetShadowCoord(vertexInput);
 #endif
     
@@ -58,69 +53,6 @@ void LitPassGeometry(uint primitiveID : SV_PrimitiveID, triangle VertexOutput in
     triStream.Append(output2);
     triStream.Append(output3);
 }
-
-// TODO: Remove this section after proper testing!
-float2 DirectionalFlow(float2 uv, float3 flowAndSpeed, float tiling, out float2x2 rotationMatrix)
-{
-    //Counterclockwise Rotation Matrix 2x2, for clockwise signs of sin need to be switched
-    //cos, -sin
-    //sin, cos
-    
-    float2 dir = normalize(flowAndSpeed.xy);
-    //uv = uv * 2 - 1;
-    rotationMatrix = float2x2(dir.y, -dir.x, dir.x, dir.y);
-    uv = mul(rotationMatrix, uv); // But rotating UV means that addition of uv is scrolling down, so in the end for clockwise direction we need to use clockwise matrix
-    //uv = uv * 0.5 + 0.5;
-    uv.y -= _Time.y * flowAndSpeed.z * _FlowSpeed;
-    
-    return uv * tiling;
-}
-
-float3 FlowCell(float2 uv, float2 offset)
-{
-    const float flowScale = 0.05;
-	
-    float2 shift = 1 - offset; // Shifting tile where is not an offset
-    shift *= 0.5;
-    offset *= 0.5;
-    
-    float2 uvTiled = (floor(uv * _GridResolution + offset) + shift) / _GridResolution;
-    
-    float3 flow = tex2D(_FlowMap, uvTiled).rga;
-    flow.xy = flow.xy * 2.0 - 1.0;
-    flow.z = length(flow.xy) * flowScale;
-    
-    float tilingModulated = 50;
-    float tiling = flow.z * tilingModulated + _Tiling;
-    float2x2 rotationMatrix;
-    //float2 uvFlow = DirectionalFlow(input.uv.xy, float2(sin(_Time.y * 0.3), cos(_Time.y * 0.3)), _Tiling, rotationMatrix);
-    float2 uvFlow = DirectionalFlow(uv + offset, flow, tiling, rotationMatrix);
-    
-    half3 dh = UnpackDerivativeHeight(tex2D(_Test, uvFlow));
-    dh.xy = mul(rotationMatrix, dh.xy);
-    // dh *= flow.z * HeightScaleModulated + HeightScale;
-    
-    return dh;
-}
-
-float3 GetDH(float2 uv)
-{
-    float2 t = frac(uv * _GridResolution);
-    t = abs(2 * t - 1);
-    float wA = (1 - t.x) * (1 - t.y);
-    float wB = t.x * (1 - t.y);
-    float wC = (1 - t.x) * t.y;
-    float wD = t.x * t.y;
-    
-    float3 dhA = FlowCell(uv, float2(0, 0));
-    float3 dhB = FlowCell(uv, float2(1, 0));
-    float3 dhC = FlowCell(uv, float2(0, 1));
-    float3 dhD = FlowCell(uv, float2(1, 1));
-    float3 dh = dhA * wA + dhB * wB + dhC * wC + dhD * wD;
-    
-    return dh;
-}
-// TODO: Remove this section after proper testing!
 
 half4 LitPassFragment(GeometryOutput input) : SV_Target
 {
@@ -147,15 +79,6 @@ half4 LitPassFragment(GeometryOutput input) : SV_Target
     
     SurfaceData surfaceData;
     InitializeSurfaceData(uvUnscaled, flowVector, uvsFlow, weights, surfaceData);
-    
-    //
-    //float3 dh = GetDH(input.uv.xy);
-    //surfaceData.normalTS = normalize(float3(-dh.xy, 1));
-    //surfaceData.albedo *= dh.z * dh.z;
-    
-    //surfaceData.albedo = half3(1, 0, 0);
-    //surfaceData.normalTS = float3(0, 0, 1);
-    //
 
     half3 normalWS = TransformTangentToWorld(surfaceData.normalTS, half3x3(input.tangentWS, input.bitangentWS, input.normalWS));
     normalWS = normalize(normalWS);
@@ -174,11 +97,6 @@ half4 LitPassFragment(GeometryOutput input) : SV_Target
 
     // Light struct contains light direction, color, distanceAttenuation and shadowAttenuation.
 #ifdef _MAIN_LIGHT_SHADOWS
-    // Main light is the brightest directional light.
-    // It is shaded outside the light loop and it has a specific set of variables and shading path
-    // so we can be as fast as possible in the case when there's only a single directional light
-    // You can pass optionally a shadowCoord (computed per-vertex). If so, shadowAttenuation will be
-    // computed.
     Light mainLight = GetMainLight(input.shadowCoord);
 #else
     Light mainLight = GetMainLight();
@@ -191,13 +109,9 @@ half4 LitPassFragment(GeometryOutput input) : SV_Target
     waterColor += LightingPhysicallyBased(brdfData, mainLight, normalWS, viewDirectionWS);
 
 #ifdef _ADDITIONAL_LIGHTS
-    // Returns the amount of lights affecting the object being renderer.
-    // These lights are culled per-object in the forward renderer
     int additionalLightsCount = GetAdditionalLightsCount();
     for (int i = 0; i < additionalLightsCount; ++i)
     {
-        // Similar to GetMainLight, but it takes a for-loop index. This figures out the
-        // per-object light index and samples the light buffer accordingly to initialized the
         // Light struct. If _ADDITIONAL_LIGHT_SHADOWS is defined it will also compute shadows.
         Light light = GetAdditionalLight(i, positionWS);
 

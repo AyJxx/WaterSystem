@@ -1,4 +1,7 @@
-﻿#ifndef WATER_UTILITIES
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#ifndef WATER_UTILITIES
 #define WATER_UTILITIES
 
 float2 UnityGradientNoiseDir(float2 p)

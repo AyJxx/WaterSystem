@@ -1,7 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -12,15 +13,8 @@ namespace WaterSystem
 	/// </summary>
 	public class WaterMeshCreator
 	{
-		private readonly MeshFilter waterMeshFilter;
-
 		private bool isProcessing;
 
-
-		public WaterMeshCreator(MeshFilter waterMeshFilter)
-		{
-			this.waterMeshFilter = waterMeshFilter;
-		}
 
 		/// <summary>
 		/// Creates water mesh.
@@ -102,7 +96,6 @@ namespace WaterSystem
 
 			// Shifting vertices, so first vertex is always one which has largest distance to his next vertex
 			var startIndex = maxIndex - 1 >= 0 ? maxIndex - 1 : verticesTmp.Count - 1;
-			//startIndex = maxIndex;
 
 			for (var i = 0; i < verticesTmp.Count; i++)
 			{
@@ -359,43 +352,6 @@ namespace WaterSystem
 							index--;
 							incrementIndex = true;
 						}
-
-						//
-						//if (x == 0)
-						//{
-						//	triangles.Add(index);
-						//	triangles.Add(index + verticesWidthCount);
-						//	triangles.Add(index + 1);
-						//	x++;
-						//}
-						//else if (x == 1)
-						//{
-						//	triangles.Add(index);
-						//	triangles.Add(index + verticesWidthCount - 1);
-						//	triangles.Add(index + 1);
-						//	x++;
-						//}
-						//else
-						//{
-						//	if (!incrementIndex)
-						//	{
-						//		triangles.Add(index);
-						//		triangles.Add(index + verticesWidthCount - 2);
-						//		triangles.Add(index + verticesWidthCount - 1);
-						//		index--; // Not incrementing index in this iteration as it is needed to start from this vertex again on next triangle
-						//		incrementIndex = true;
-						//	}
-						//	else if (x != verticesWidthCount - 1)
-						//	{
-						//		triangles.Add(index);
-						//		triangles.Add(index + verticesWidthCount - 1);
-						//		triangles.Add(index + 1);
-						//		x++;
-						//		incrementIndex = false;
-						//	}
-						//	else if (x == verticesWidthCount - 1)
-						//		x++;
-						//}
 					}
 				}
 			});

@@ -1,4 +1,7 @@
-﻿#if UNITY_EDITOR
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
@@ -238,16 +241,6 @@ namespace WaterSystem
 			waterHeightTextureUpdated = true;
 
 			AsyncGPUReadback.Request(WaterHeightMap, 0, TextureFormat.RGBAFloat, OnWaterHeightTextureProcessed);
-
-
-			//RenderTexture.active = VerticesOutputTexture;
-
-			//waterHeightTexture.ReadPixels(new Rect(0, 0, VerticesOutputTexture.width, VerticesOutputTexture.height), 0, 0);
-			//waterHeightTexture.Apply();
-
-			//waterHeightData = waterHeightTexture.GetPixels();
-
-			//RenderTexture.active = null;
 		}
 
 		/// <summary>
@@ -263,20 +256,14 @@ namespace WaterSystem
 			worldPos.x = (worldPos.x - WaterBuilder.VerticesMinWorldPos.x) / WaterBuilder.VerticesScaleFactorXZ;
 			worldPos.z = (worldPos.z - WaterBuilder.VerticesMinWorldPos.z) / WaterBuilder.VerticesScaleFactorXZ;
 
-			//var x = (int)(worldPos.x * waterTextureSize);
-			//var z = (int)(worldPos.z * waterTextureSize);
 			var x = Mathf.FloorToInt(worldPos.x * (waterHeightTextureDimensionsSize - 1));
 			var z = Mathf.FloorToInt(worldPos.z * (waterHeightTextureDimensionsSize - 1));
 			var index = x + (z * waterHeightTextureDimensionsSize);
-
-			//var waterHeight = waterTexture.GetPixel(Mathf.FloorToInt(worldPos.x * waterTextureSize), Mathf.FloorToInt(worldPos.z * waterTextureSize)).g;
-			//waterHeight = waterController.Builder.VerticesMinWorldPos.y + waterController.Builder.VerticesScaleFactorY * waterHeight;
 
 			if (index < 0 || index >= waterHeightData.Length)
 				return float.MinValue;
 
 			var waterHeight = waterHeightData[index].g;
-			//waterHeight = waterController.Builder.VerticesMinWorldPos.y + waterController.Builder.VerticesScaleFactorY * waterHeight;
 			waterHeight = waterHeight * 2 - 1;
 			waterHeight *= WaterBuilder.VerticesScaleFactorY;
 
@@ -351,20 +338,6 @@ namespace WaterSystem
 			WaterSurfaceMaterial.SetFloat(WaterShaderProperties.WaterHeightMapScaleFactorXZ, scaleFactorXZ);
 			WaterSurfaceMaterial.SetFloat(WaterShaderProperties.WaterHeightMapScaleFactorY, scaleFactorY);
 			WaterSurfaceMaterial.SetVector(WaterShaderProperties.MinWorldPos, minWorldPos);
-
-			// TODO: Solve underwater view
-			//if (waterController.UnderwaterViewMaterial != null)
-			//{
-			//	waterController.UnderwaterViewMaterial.SetFloat(waterHeightMapScaleFactorXZID, scaleFactorXZ);
-			//	waterController.UnderwaterViewMaterial.SetFloat(waterHeightMapScaleFactorYID, scaleFactorY);
-			//	waterController.UnderwaterViewMaterial.SetVector(minWorldPosID, minWorldPos);
-
-			//	//
-			//	underwaterSurfaceOcclusionMaterial.SetFloat(waterHeightMapScaleFactorXZID, scaleFactorXZ);
-			//	underwaterSurfaceOcclusionMaterial.SetFloat(waterHeightMapScaleFactorYID, scaleFactorY);
-			//	underwaterSurfaceOcclusionMaterial.SetVector(minWorldPosID, minWorldPos);
-			//	//
-			//}
 		}
 
 		private void OnFlowMapCreated(Texture2D flowMap)

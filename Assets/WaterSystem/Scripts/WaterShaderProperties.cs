@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+using UnityEngine;
 
 namespace WaterSystem
 {

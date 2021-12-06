@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Adam Jůva.
+// Licensed under the MIT License.
+
+using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -30,13 +33,6 @@ namespace WaterSystem
 			public float WaveFrequency;
 		};
 
-		//
-		[HideInInspector] public Transform testPos;
-		[HideInInspector] public bool test;
-		[HideInInspector] public float amount;
-
-		[HideInInspector] public Material underwaterSurfaceOcclusionMaterial;
-		//
 
 		[Header("Collisions")]
 		[SerializeField] private LayerMask ignoreMask;
@@ -110,68 +106,11 @@ namespace WaterSystem
 			{
 				ignoredObjectTags.Add(ignoreTag);
 			}
-
-			// TODO: Solve underwater view
-			//if (waterController.UnderwaterViewMaterial != null)
-			//{
-			//	waterController.UnderwaterViewMaterial.SetTexture(waterHeightMapID, WaterHeightMap);
-			//	waterController.UnderwaterViewMaterial.SetFloat(waterHeightMapScaleFactorXZID, waterController.Builder.VerticesScaleFactorXZ);
-			//	waterController.UnderwaterViewMaterial.SetFloat(waterHeightMapScaleFactorYID, waterController.Builder.VerticesScaleFactorY);
-			//	waterController.UnderwaterViewMaterial.SetVector(minWorldPosID, waterController.Builder.VerticesMinWorldPos);
-			//}
-
-			//
-			//if (underwaterSurfaceOcclusionMaterial != null)
-			//{
-			//	underwaterSurfaceOcclusionMaterial.SetBuffer(WavesDataID, wavesBuffer);
-			//	underwaterSurfaceOcclusionMaterial.SetFloat(WaterHeightMapScaleFactorXZID, waterBuilder.VerticesScaleFactorXZ);
-			//	underwaterSurfaceOcclusionMaterial.SetFloat(WaterHeightMapScaleFactorYID, waterBuilder.VerticesScaleFactorY);
-			//	underwaterSurfaceOcclusionMaterial.SetVector(MinWorldPosID, waterBuilder.VerticesMinWorldPos);
-			//}
-			//
 		}
 
 		private void Update()
 		{
-			//
-			//if (underwaterSurfaceOcclusionMaterial != null)
-			//{
-			//	underwaterSurfaceOcclusionMaterial.SetTexture(WaterHeightMapID, WaterHeightMap);
-			//	underwaterSurfaceOcclusionMaterial.SetFloat(WaveAmplitudeID, waterBuilder.WaterSurfaceMaterial.GetFloat(WaveAmplitudeID));
-			//	underwaterSurfaceOcclusionMaterial.SetInt(WavesCountID, wavesData.Count);
-			//}
-			//
-
 			UpdateWaves();
-			
-			if (test)
-			{
-				var hitPos = transform.InverseTransformPoint(testPos.position);
-				hitPos.y = 0.0f;
-
-				if (wavesData.Count == 0)
-				{
-					wavesData.Add(new WaveData
-					{
-						WaveFrequency = 1,
-						WaveSpread = amount,
-						WaveStrength = waveStrength,
-						WaveHitPos = hitPos
-					});
-				}
-				else
-				{
-					wavesData[0] = new WaveData
-					{
-						WaveFrequency = 1,
-						WaveSpread = amount,
-						WaveStrength = waveStrength,
-						WaveHitPos = hitPos
-					};
-				}
-
-				//test = false;
-			}
 		}
 
 		private void OnDestroy()
