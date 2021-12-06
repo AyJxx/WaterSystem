@@ -185,9 +185,9 @@ void CalculateWaves(inout float3 vertexPos, inout float3 vertexNormal, inout flo
 	
     // Waves created by interaction with water
 #ifdef _INTERACTION_WAVES
-    for (int i = 0; i < _InteractionWavesCount; i++)
+    for (int j = 0; j < _InteractionWavesCount; j++)
     {
-        int index = i;
+        int index = j;
         InteractionWaveData waveData = _InteractionWavesData[index];
     	
         float hitDistanceToPos = distance(waveData.waveHitPos, float3(finalVertexPos.x, 0.0, finalVertexPos.z));

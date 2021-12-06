@@ -128,10 +128,10 @@ float3 SampleNormalMapByFlow(sampler2D sampledTexture, float normalScale, float2
 
 half3 SampleColorTextureByFlow(sampler2D sampledTexture, float4 tilingAndOffset, float2 uvsFlow[4], float weights[4])
 {
-    half3 color1 = tex2D(sampledTexture, uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw);
-    half3 color2 = tex2D(sampledTexture, uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw);
-    half3 color3 = tex2D(sampledTexture, uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw);
-    half3 color4 = tex2D(sampledTexture, uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw);
+    half3 color1 = tex2D(sampledTexture, uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
+    half3 color2 = tex2D(sampledTexture, uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
+    half3 color3 = tex2D(sampledTexture, uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
+    half3 color4 = tex2D(sampledTexture, uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw).xyz;
 
     //color1 *= flow.z * HeightScaleModulated + HeightScale;
 	//...
@@ -142,10 +142,10 @@ half3 SampleColorTextureByFlow(sampler2D sampledTexture, float4 tilingAndOffset,
 float CalculateWaterColorGradientParameter(float4 tilingAndOffset, float2 uvsFlow[4], float weights[4])
 {
 	// TODO: Make this parametrized
-    half noise1 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw));
-    half noise2 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw));
-    half noise3 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw));
-    half noise4 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw));
+    half noise1 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[0] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
+    half noise2 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[1] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
+    half noise3 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[2] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
+    half noise4 = smoothstep(0, 1, UnityGradientNoise(uvsFlow[3] * tilingAndOffset.xy + tilingAndOffset.zw)).x;
 	
     return noise1 * weights[0] + noise2 * weights[1] + noise3 * weights[2] + noise4 * weights[3];
 }

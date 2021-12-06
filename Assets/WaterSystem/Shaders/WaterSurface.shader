@@ -128,7 +128,10 @@ Shader "Water System/Water Surface"
             HLSLPROGRAM
             #pragma prefer_hlslcc gles
             #pragma exclude_renderers d3d11_9x
-            #pragma target 2.0
+            #pragma require geometry
+            #pragma require tessellation tessHW
+            
+            #pragma target 3.5
 
             #pragma shader_feature _SPECULARHIGHLIGHTS_OFF
             #pragma shader_feature _GLOSSYREFLECTIONS_OFF
