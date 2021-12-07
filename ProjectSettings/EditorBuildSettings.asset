@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: d1c3109bdb54ad54c8a2b2838528e640
+    path: Assets/WaterSystem/Scenes/WaterSystem.unity
+    guid: ff86790bc96d73649bacad6ca97c5b1e
   m_configObjects: {}

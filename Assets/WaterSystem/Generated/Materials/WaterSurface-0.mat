@@ -25,7 +25,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DynamicFoamTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 4426f5382777f824e850790e929cfbd8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EdgeFoamTex:
@@ -37,11 +37,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FoamWaveTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d18660a6d5460144d96b8ff1599736b7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _InteractionFoamTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: bf7433caac6ec94489b781343c8632ed, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
@@ -58,8 +58,8 @@ Material:
     - _CausticsStrength: 25
     - _Cull: 2
     - _DynamicFoam: 1
-    - _DynamicFoamStrength: 0.5
-    - _DynamicWaveAmplitude: 1
+    - _DynamicFoamStrength: 0.75
+    - _DynamicWaveAmplitude: 0.35
     - _DynamicWaves: 1
     - _EdgeFading: 0
     - _EdgeFadingX: 0
@@ -71,16 +71,16 @@ Material:
     - _FoamWaves: 1
     - _GridResolution: 5
     - _InteractionFoam: 1
-    - _InteractionFoamStrength: 0.75
-    - _InteractionWaveAmplitude: 0.4
-    - _InteractionWaveFrequency: 10
-    - _InteractionWaveSpeed: 1.25
+    - _InteractionFoamStrength: 1
+    - _InteractionWaveAmplitude: 0.2
+    - _InteractionWaveFrequency: 0.5
+    - _InteractionWaveSpeed: 1
     - _InteractionWaves: 1
-    - _NormalScale: 0.35
+    - _NormalScale: 0.25
     - _ReceiveShadows: 1
     - _RefractionStrength: 0.25
     - _ShoreBlendFactor: 2
-    - _Smoothness: 0.975
+    - _Smoothness: 0.97
     - _SpecularHighlights: 1
     - _StaticFoam: 1
     - _StaticFoamStrength: 0.75
@@ -97,5 +97,5 @@ Material:
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _UnderwaterColor: {r: 0.007843138, g: 0.18039216, b: 0.03137255, a: 1}
     - _WaterColor1: {r: 0.64705884, g: 1, b: 0.95686275, a: 1}
-    - _WaterColor2: {r: 0, g: 0.28235295, b: 0.09019608, a: 1}
+    - _WaterColor2: {r: 0.13358848, g: 0.3584906, b: 0.30781487, a: 1}
   m_BuildTextureStacks: []
