@@ -24,10 +24,10 @@ namespace WaterSystem.Utilities
 
 		private void LateUpdate()
 		{
-			if (!target)
-				return;
-
-			transform.position = target.position;
+			if (target != null)
+			{
+				transform.position = target.position;
+			}
 		}
 	}
 }
