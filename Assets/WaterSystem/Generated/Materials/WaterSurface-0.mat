@@ -1,0 +1,101 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: WaterSurface-0
+  m_Shader: {fileID: 4800000, guid: f2355ff12c0611e42a1b198dcd8cba55, type: 3}
+  m_ShaderKeywords: _DYNAMIC_FOAM _DYNAMIC_WAVES _EDGE_FADING _EDGE_FOAM _FOAM_WAVES
+    _INTERACTION_FOAM _INTERACTION_WAVES _RECEIVE_SHADOWS_OFF _STATIC_FOAM _TESSELLATION_EDGEFACTOR
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CausticsTex:
+        m_Texture: {fileID: 2800000, guid: b9e2b173d5cc37247a34050f846b029c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DynamicFoamTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EdgeFoamTex:
+        m_Texture: {fileID: 2800000, guid: 545085272bd4eda47828779979c87973, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamWaveTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _InteractionFoamTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 6b908d216b3853a4081b07d28c61ca48, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _StaticFoamTex:
+        m_Texture: {fileID: 2800000, guid: 4426f5382777f824e850790e929cfbd8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Caustics: 1
+    - _CausticsDepth: 3
+    - _CausticsStrength: 25
+    - _Cull: 2
+    - _DynamicFoam: 1
+    - _DynamicFoamStrength: 0.5
+    - _DynamicWaveAmplitude: 1
+    - _DynamicWaves: 1
+    - _EdgeFading: 0
+    - _EdgeFadingX: 0
+    - _EdgeFadingY: 0
+    - _EdgeFoam: 1
+    - _EdgeFoamStrength: 0.75
+    - _EnvironmentReflections: 1
+    - _FlowSpeed: 0.5
+    - _FoamWaves: 1
+    - _GridResolution: 5
+    - _InteractionFoam: 1
+    - _InteractionFoamStrength: 0.75
+    - _InteractionWaveAmplitude: 0.4
+    - _InteractionWaveFrequency: 10
+    - _InteractionWaveSpeed: 1.25
+    - _InteractionWaves: 1
+    - _NormalScale: 0.35
+    - _ReceiveShadows: 1
+    - _RefractionStrength: 0.25
+    - _ShoreBlendFactor: 2
+    - _Smoothness: 0.975
+    - _SpecularHighlights: 1
+    - _StaticFoam: 1
+    - _StaticFoamStrength: 0.75
+    - _Tessellation: 0
+    - _TessellationEdgeFactor: 5
+    - _TessellationEdgeLength: 1
+    - _Tiling: 10
+    - _UnderwaterDensity: 0.5
+    - _WaterOpacity: 0.75
+    - _WaterScale: 1
+    m_Colors:
+    - _CausticsScaleSpeed1: {r: 0.25, g: 0.25, b: 0.15, a: 0.15}
+    - _CausticsScaleSpeed2: {r: 0.15, g: 0.15, b: -0.25, a: -0.25}
+    - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _UnderwaterColor: {r: 0.007843138, g: 0.18039216, b: 0.03137255, a: 1}
+    - _WaterColor1: {r: 0.64705884, g: 1, b: 0.95686275, a: 1}
+    - _WaterColor2: {r: 0, g: 0.28235295, b: 0.09019608, a: 1}
+  m_BuildTextureStacks: []
