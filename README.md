@@ -14,7 +14,7 @@ Water System gives you control over creating fully customizable water mesh which
 
 I decided to release Water System as-is and as an open source, because of impossibility to provide more time on my side to finish and implement all features. It has few small drawbacks, which you can find below, but these are only small things and it is fully functional asset and you can definitely use it in your projects.
 
-Demo Video: https://www.youtube.com/watch?v=kvCLOCA3V8s&ab_channel=AdamJ%C5%AFva
+Demo Video: https://youtu.be/HPkzruGYw3E
 
 # Features
 **Water Builder**
