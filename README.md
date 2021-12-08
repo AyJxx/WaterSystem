@@ -31,6 +31,7 @@ Demo Video: https://www.youtube.com/watch?v=kvCLOCA3V8s&ab_channel=AdamJ%C5%AFva
 - Controlling interactions by other objects with the water
 
 # Requirements
+- Tested only as standalone on Windows (requires compute shaders support)
 - Universal Render Pipeline
 - Unity v2020+
 
