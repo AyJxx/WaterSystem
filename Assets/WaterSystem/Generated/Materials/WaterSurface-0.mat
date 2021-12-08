@@ -59,13 +59,13 @@ Material:
     - _Cull: 2
     - _DynamicFoam: 1
     - _DynamicFoamStrength: 0.75
-    - _DynamicWaveAmplitude: 0.35
+    - _DynamicWaveAmplitude: 0.25
     - _DynamicWaves: 1
     - _EdgeFading: 0
     - _EdgeFadingX: 0
     - _EdgeFadingY: 0
     - _EdgeFoam: 1
-    - _EdgeFoamStrength: 0.75
+    - _EdgeFoamStrength: 0.5
     - _EnvironmentReflections: 1
     - _FlowSpeed: 0.5
     - _FoamWaves: 1

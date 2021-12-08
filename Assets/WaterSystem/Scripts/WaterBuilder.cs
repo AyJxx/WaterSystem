@@ -152,8 +152,9 @@ namespace WaterSystem
 			name = "Water";
 			gameObject.layer = 4; // Water layer
 
-			await CreateWaterMesh();
 			CreateWaterSurfaceMaterial();
+
+			await CreateWaterMesh();
 
 			var waterBase = GetComponent<WaterBase>();
 			if (waterBase != null)
