@@ -13,6 +13,7 @@ using UnityEditor.SceneManagement;
 #endif
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering;
 
 namespace WaterSystem
 {
@@ -151,6 +152,7 @@ namespace WaterSystem
 		{
 			name = "Water";
 			gameObject.layer = 4; // Water layer
+			WaterRenderer.shadowCastingMode = ShadowCastingMode.Off;
 
 			CreateWaterSurfaceMaterial();
 
